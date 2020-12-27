@@ -14613,13 +14613,17 @@ int Move_RateMult_Slider (Param *param, int chain, RandLong *seed, MrBFlt *lnPri
 
     x = oldRate[0] / sum;
     y = x + delta * (RandomNumber(seed) - 0.5);
-    while (y < min || y > max)
-        {
-        if (y < min)
-            y = 2.0 * min - y;
-        if (y > max)
-            y = 2.0 * max - y;
-        }
+    // Minimal change. Upper line is left for RandomNumber() to 'consume' the seed.
+    if( min >= max ) { y = min; }
+    else {
+        while (y < min || y > max)
+            {
+            if (y < min)
+                y = 2.0 * min - y;
+            if (y > max)
+                y = 2.0 * max - y;
+            }
+    }
     
     /* set the new values */
     newRate[0] = y * sum;
